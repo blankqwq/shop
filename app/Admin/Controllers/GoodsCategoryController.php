@@ -2,15 +2,17 @@
 
 namespace App\Admin\Controllers;
 
-use App\Models\User;
+use App\Models\GoodsCategory;
 use App\Http\Controllers\Controller;
 use Encore\Admin\Controllers\HasResourceActions;
 use Encore\Admin\Form;
 use Encore\Admin\Grid;
 use Encore\Admin\Layout\Content;
 use Encore\Admin\Show;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
-class UsersController extends Controller
+class GoodsCategoryController extends Controller
 {
     use HasResourceActions;
 
@@ -53,8 +55,8 @@ class UsersController extends Controller
     public function edit($id, Content $content)
     {
         return $content
-            ->header('Edit')
-            ->description('description')
+            ->header('编辑')
+            ->description('编辑商品分类')
             ->body($this->form()->edit($id));
     }
 
@@ -67,8 +69,8 @@ class UsersController extends Controller
     public function create(Content $content)
     {
         return $content
-            ->header('Create')
-            ->description('description')
+            ->header('创建')
+            ->description('创建商品分类')
             ->body($this->form());
     }
 
@@ -79,18 +81,18 @@ class UsersController extends Controller
      */
     protected function grid()
     {
-        $grid = new Grid(new User);
+        $grid = new Grid(new GoodsCategory);
 
         $grid->id('Id');
-        $grid->name('Name');
-        $grid->avatar('Avatar');
-        $grid->phone('Phone');
-        $grid->email('Email');
-        $grid->email_verified_at('Email verified at');
-        $grid->password('Password');
-        $grid->remember_token('Remember token');
-        $grid->created_at('Created at');
-        $grid->updated_at('Updated at');
+        $grid->name('分类名');
+        $grid->parent_id('父级id');
+        $grid->image('图片')->image( config('app.url').'/storage/',50, 50);
+        $grid->levels('等级');
+        $grid->sort('排序级别');
+        $grid->possess('路径');
+        $grid->model()->orderby('level','asc');
+        $grid->model()->orderby('sort','desc');
+        $grid->model()->orderby('id','asc');
 
         return $grid;
     }
@@ -103,16 +105,15 @@ class UsersController extends Controller
      */
     protected function detail($id)
     {
-        $show = new Show(User::findOrFail($id));
+        $show = new Show(GoodsCategory::findOrFail($id));
 
         $show->id('Id');
-        $show->name('Name');
-        $show->avatar('Avatar');
-        $show->phone('Phone');
-        $show->email('Email');
-        $show->email_verified_at('Email verified at');
-        $show->password('Password');
-        $show->remember_token('Remember token');
+        $show->name('分类名');
+        $show->parent_id('父级');
+        $show->image('图片')->image( config('app.url').'/storage/');
+        $show->levels('排序等级');
+        $show->sort('排序等级');
+        $show->full_name('路径');
         $show->created_at('Created at');
         $show->updated_at('Updated at');
 
@@ -126,16 +127,24 @@ class UsersController extends Controller
      */
     protected function form()
     {
-        $form = new Form(new User);
+        $category=new GoodsCategory();
+        $form = new Form($category);
 
-        $form->text('name', 'Name');
-        $form->image('avatar', 'Avatar')->default('用户头像默认地址');
-        $form->mobile('phone', 'Phone');
-        $form->email('email', 'Email');
-        $form->datetime('email_verified_at', 'Email verified at')->default(date('Y-m-d H:i:s'));
-        $form->password('password', 'Password');
-        $form->text('remember_token', 'Remember token');
+        $form->text('name', '分类名');
+        $form->select('parent_id','上级')
+            ->options($category::selectOptions(function ($category) {
+                return $category->where('level','<>',2);
+            }));
+        $form->image('image', '图片');
+        $form->number('sort', '排序级别')->default(0);
 
         return $form;
+    }
+
+    public function apiShow(Request $request){
+        $parent_id = (empty($request->input('q'))) ? 0 : $request->input('q');
+        $category = GoodsCategory::where('parent_id', $parent_id)->get(['id', DB::raw('name as text'), 'level']);
+
+        return $category;
     }
 }

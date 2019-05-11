@@ -2,7 +2,7 @@
 
 namespace App\Admin\Controllers;
 
-use App\Models\User;
+use App\Models\GoodsAttribute;
 use App\Http\Controllers\Controller;
 use Encore\Admin\Controllers\HasResourceActions;
 use Encore\Admin\Form;
@@ -10,7 +10,7 @@ use Encore\Admin\Grid;
 use Encore\Admin\Layout\Content;
 use Encore\Admin\Show;
 
-class UsersController extends Controller
+class GoodsAttributesController extends Controller
 {
     use HasResourceActions;
 
@@ -79,16 +79,11 @@ class UsersController extends Controller
      */
     protected function grid()
     {
-        $grid = new Grid(new User);
+        $grid = new Grid(new GoodsAttribute);
 
         $grid->id('Id');
-        $grid->name('Name');
-        $grid->avatar('Avatar');
-        $grid->phone('Phone');
-        $grid->email('Email');
-        $grid->email_verified_at('Email verified at');
-        $grid->password('Password');
-        $grid->remember_token('Remember token');
+        $grid->category_id('分类');
+        $grid->name('属性名');
         $grid->created_at('Created at');
         $grid->updated_at('Updated at');
 
@@ -103,16 +98,11 @@ class UsersController extends Controller
      */
     protected function detail($id)
     {
-        $show = new Show(User::findOrFail($id));
+        $show = new Show(GoodsAttribute::findOrFail($id));
 
         $show->id('Id');
+        $show->category_id('Category id');
         $show->name('Name');
-        $show->avatar('Avatar');
-        $show->phone('Phone');
-        $show->email('Email');
-        $show->email_verified_at('Email verified at');
-        $show->password('Password');
-        $show->remember_token('Remember token');
         $show->created_at('Created at');
         $show->updated_at('Updated at');
 
@@ -126,16 +116,16 @@ class UsersController extends Controller
      */
     protected function form()
     {
-        $form = new Form(new User);
+        $form = new Form(new GoodsAttribute);
 
+        $form->select('category_1', 'Category id')
+        ->options(url('/admin/api/goods_category'))
+            ->load('category_2',url('/admin/api/goods_category'));
+        $form->select('category_2', 'Category id')
+            ->load('category_id',url('/admin/api/goods_category'));
+        $form->select('category_id', 'Category id');
         $form->text('name', 'Name');
-        $form->image('avatar', 'Avatar')->default('用户头像默认地址');
-        $form->mobile('phone', 'Phone');
-        $form->email('email', 'Email');
-        $form->datetime('email_verified_at', 'Email verified at')->default(date('Y-m-d H:i:s'));
-        $form->password('password', 'Password');
-        $form->text('remember_token', 'Remember token');
-
+        $form->ignore(['category_1','category_2']);
         return $form;
     }
 }
