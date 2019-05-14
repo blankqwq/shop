@@ -7,4 +7,5 @@ use Illuminate\Database\Eloquent\Model;
 class GoodsAttributeValue extends Model
 {
     //
+    protected $fillable=['name'];
 }

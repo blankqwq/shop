@@ -2,17 +2,15 @@
 
 namespace App\Admin\Controllers;
 
-use App\Models\GoodsCategory;
+use App\Models\Picture;
 use App\Http\Controllers\Controller;
 use Encore\Admin\Controllers\HasResourceActions;
 use Encore\Admin\Form;
 use Encore\Admin\Grid;
 use Encore\Admin\Layout\Content;
 use Encore\Admin\Show;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
-class GoodsCategoryController extends Controller
+class PicturesController extends Controller
 {
     use HasResourceActions;
 
@@ -55,8 +53,8 @@ class GoodsCategoryController extends Controller
     public function edit($id, Content $content)
     {
         return $content
-            ->header('编辑')
-            ->description('编辑商品分类')
+            ->header('Edit')
+            ->description('description')
             ->body($this->form()->edit($id));
     }
 
@@ -69,8 +67,8 @@ class GoodsCategoryController extends Controller
     public function create(Content $content)
     {
         return $content
-            ->header('创建')
-            ->description('创建商品分类')
+            ->header('Create')
+            ->description('description')
             ->body($this->form());
     }
 
@@ -81,18 +79,16 @@ class GoodsCategoryController extends Controller
      */
     protected function grid()
     {
-        $grid = new Grid(new GoodsCategory);
+        $grid = new Grid(new Picture);
 
         $grid->id('Id');
-        $grid->name('分类名');
-        $grid->parent_id('父级id');
-        $grid->image('图片')->image( config('app.url').'/storage/',50, 50);
-        $grid->levels('等级');
-        $grid->sort('排序级别');
-        $grid->possess('路径');
-        $grid->model()->orderby('level','asc');
-        $grid->model()->orderby('sort','desc');
-        $grid->model()->orderby('id','asc');
+        $grid->name('Name');
+        $grid->url('Url');
+        $grid->goods_id('Goods id');
+        $grid->size('Size');
+        $grid->is_main('Is main');
+        $grid->created_at('Created at');
+        $grid->updated_at('Updated at');
 
         return $grid;
     }
@@ -105,15 +101,14 @@ class GoodsCategoryController extends Controller
      */
     protected function detail($id)
     {
-        $show = new Show(GoodsCategory::findOrFail($id));
+        $show = new Show(Picture::findOrFail($id));
 
         $show->id('Id');
-        $show->name('分类名');
-        $show->parent_id('父级');
-        $show->image('图片')->image( config('app.url').'/storage/');
-        $show->levels('排序等级');
-        $show->sort('排序等级');
-        $show->full_name('路径');
+        $show->name('Name');
+        $show->url('Url');
+        $show->goods_id('Goods id');
+        $show->size('Size');
+        $show->is_main('Is main');
         $show->created_at('Created at');
         $show->updated_at('Updated at');
 
@@ -127,26 +122,14 @@ class GoodsCategoryController extends Controller
      */
     protected function form()
     {
-        $category=new GoodsCategory();
-        $form = new Form($category);
+        $form = new Form(new Picture);
 
-        $form->text('name', '分类名');
-        $form->select('parent_id','上级')
-            ->options($category::selectOptions(function ($category) {
-                return $category->where('level','<>',2);
-            }));
-        $form->image('image', '图片');
-        $form->number('sort', '排序级别')->default(0);
+        $form->text('name', 'Name');
+        $form->url('url', 'Url');
+        $form->number('goods_id', 'Goods id');
+        $form->text('size', 'Size');
+        $form->switch('is_main', 'Is main');
 
         return $form;
     }
-
-    public function apiShow(Request $request){
-        $parent_id = (empty($request->input('q'))) ? 0 : $request->input('q');
-        $category = GoodsCategory::where('parent_id', $parent_id)->get(['id', DB::raw('name as text'), 'level']);
-
-        return $category;
-    }
-
-
 }

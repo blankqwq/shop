@@ -12,9 +12,12 @@ Route::group([
 
     $router->get('/', 'HomeController@index');
     $router->resource('/users', 'UsersController');
+    $router->post('/goods', 'GoodsController@create');
     $router->resource('/goods', 'GoodsController');
+
     $router->resource('/goods_attribute', 'GoodsAttributesController');
     $router->resource('/goods_category', 'GoodsCategoryController');
 
     $router->get('/api/goods_category', 'GoodsCategoryController@apiShow');
+    $router->get('/api/goods_attribute', 'GoodsAttributesController@apiShow');
 });

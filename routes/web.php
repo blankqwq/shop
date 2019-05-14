@@ -15,8 +15,8 @@ Route::get('/', 'PagesController@index');
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
-
+Route::get('/goods', 'GoodsController@index')->name('goods.index');
+Route::get('/goods/{id}', 'GoodsController@show')->name('goods.show');
 Route::group(['middleware' => ['auth', 'verified']], function () {
     Route::get('/user/addresses', 'UserAddressesController@index')->name('user.addresses.index');
     Route::post('/user/addresses', 'UserAddressesController@store')->name('user.addresses.store');
