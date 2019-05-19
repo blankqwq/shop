@@ -33,7 +33,7 @@ class OrderController extends Controller
     }
 
     public function show(Order $order){
-
+        $this->authorize('own',$order);
         return view('orders.show',['order'=>$order->load(['items.sku','items.goods'])]);
     }
 }

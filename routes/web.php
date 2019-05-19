@@ -34,8 +34,13 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
     Route::get('orders', 'OrderController@index')->name('orders.index');
     Route::post('orders', 'OrderController@store')->name('orders.store');
     Route::get('orders/{order}', 'OrderController@show')->name('orders.show');
+
+    Route::get('payment/{order}/alipay', 'PaymentController@payByAlipay')->name('payment.alipay');
+    Route::get('payment/{order}/wechart', 'PaymentController@payByWechart')->name('payment.wechart');
+
 });
 
 
 Route::get('/goods', 'GoodsController@index')->name('goods.index');
 Route::get('/goods/{id}', 'GoodsController@show')->name('goods.show');
+

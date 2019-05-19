@@ -15459,6 +15459,11 @@ body {
   flex-shrink: 100;
 }
 
+.orders-show-page .order-info .payment-buttons {
+  margin-top: 10px;
+  padding-right: 10px;
+}
+
 .orders-show-page .order-summary {
   width: 50%;
   font-family: Verdana, Tahoma, Helvetica, Arial;
