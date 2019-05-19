@@ -13,8 +13,9 @@ class CartController extends Controller
 
     public function index(Request $request){
         $user = $request->user();
-        $carts = $user->cartItems()->with(['sku'])->paginate(10);
-        return view('cart.index',compact('carts'));
+        $carts = $user->cartItems()->with(['sku'])->get();
+        $addresses = $request->user()->addresses()->orderBy('last_use', 'desc')->get();
+        return view('cart.index',compact('carts','addresses'));
     }
 
     public function addCart(CartRequest $request){

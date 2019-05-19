@@ -11,7 +11,7 @@
 |
 */
 Auth::routes(['verify' => true]);
-Route::get('/', 'PagesController@index')->name('root');
+Route::get('/', 'GoodsController@index')->name('root');
 
 Auth::routes();
 
@@ -26,8 +26,14 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
     Route::get('/goods/favorites', 'GoodsController@favorites')->name('goods.favor.index');
     Route::post('goods/{goods}/favorite', 'GoodsController@favor')->name('user.goods.favor');
     Route::delete('/goods/{goods}/favorite', 'GoodsController@disfavor')->name('user.goods.disfavor');
+
     Route::get('cart', 'CartController@index')->name('cart.index');
     Route::delete('cart/{sku}', 'CartController@remove')->name('cart.remove');
+
+
+    Route::get('orders', 'OrderController@index')->name('orders.index');
+    Route::post('orders', 'OrderController@store')->name('orders.store');
+    Route::get('orders/{order}', 'OrderController@show')->name('orders.show');
 });
 
 
