@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\InvalidRequestException;
 use App\Models\Goods;
+use App\Models\GoodsAttribute;
+use \Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
 class GoodsController extends Controller
@@ -34,8 +37,37 @@ class GoodsController extends Controller
         return view('goods.index', ['goodss' => $goodss, 'filters' => ['search' => $search, 'order' => $order]]);
     }
 
-    public function show($id){
-        $goods = Goods::with('skus','pictures','picture')->find($id);
-        return view('goods.show',compact('goods'));
+    public function show($id)
+    {
+        $goods = Goods::with('skus', 'pictures', 'picture', 'attributes')->find($id);
+        if (!$goods)
+            throw new InvalidRequestException('商品未上架',404);
+        $favored=false;
+        if (Auth::user()->favoriteGoods()->find($goods->id))
+            $favored=true;
+        $valuess = $goods->getValues();
+
+        return view('goods.show', compact('goods','valuess','favored'));
     }
+
+    public function favor(Goods $goods,Request $request){
+        $user = $request->user();
+        if ($user->favoriteGoods()->find($goods->id))
+            return [];
+        $user->favoriteGoods()->attach($goods);
+        return [];
+    }
+
+    public function disfavor(Goods $goods,Request $request){
+        $user = $request->user();
+        $user->favoriteGoods()->detach($goods);
+        return [];
+    }
+
+    public function favorites(Request $request){
+        $user = $request->user();
+        $goodss = $user->favoriteGoods()->paginate(16);
+        return view('goods.favorites',compact('goodss'));
+    }
+
 }

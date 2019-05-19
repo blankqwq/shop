@@ -54,5 +54,37 @@ class Goods extends Model
         return $this->hasOne(Picture::class, 'goods_id', 'id')->where('is_main', 1);
     }
 
+    public function attributes()
+    {
+        return $this->hasMany(GoodsAttribute::class, 'category_id', 'category_id');
+    }
+
+    public function attributeValue()
+    {
+        return $this->hasMany(GoodsAttribute::class, 'category_id', 'category_id');
+    }
+
+    public function getValues()
+    {
+        $values = [];
+        foreach ($this->skus as $sku){
+            $datas = explode(',', $sku->attrs);
+            foreach ($datas as $data) {
+                $temp = explode(':', $data);
+                if (isset($values[$temp[0]])) {
+                    $values[$temp[0]] = array_merge([$temp[1]], $values[$temp[0]]);
+                    $values[$temp[0]]= array_unique($values[$temp[0]]);
+                } else {
+                    $values[$temp[0]] = [$temp[1]];
+                }
+            }
+        }
+        $datas=[];
+        foreach ($values as $key=>$value){
+            //替换成中文
+            $datas[$key][GoodsAttribute::find($key)->name]=GoodsAttributeValue::select(['id','name'])->whereIn('id',$value)->get()->toArray();
+        }
+        return $datas;
+    }
 
 }

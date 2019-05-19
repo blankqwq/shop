@@ -1,6 +1,6 @@
 // Variables
 @import 'variables';
-
+@import "~@fortawesome/fontawesome-free/css/all.css";
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
 
@@ -57,7 +57,7 @@ body {
   }
 }
 
-.goods-index-page {
+.goods-index-page , .goods-favor-index-page{
   .pagination {
     margin-right: 5px;
   }
@@ -241,6 +241,53 @@ body {
     .tab-content {
       border: 1px solid #eee;
       padding: 20px;
+    }
+  }
+}
+
+
+.cart-index-page {
+  .goods_list {
+    .preview {
+      img {
+        max-width: 80px;
+        max-height: 80px;
+      }
+      margin-right: 20px;
+    }
+
+    .goods_info {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-start;
+      font-size: 12px;
+      .goods_title, .sku_title, .warning {
+        display: block;
+      }
+
+      .goods_title a {
+        color: #3c3c3c;
+        font-size: 14px;
+      }
+      .not_on_sale {
+        .goods_title, .sku_title {
+          text-decoration: line-through;
+        }
+        .warning {
+          color: red;
+        }
+      }
+    }
+
+    .price {
+      font-size: 12px;
+      font-weight: 700;
+      color: #3c3c3c;
+    }
+
+    input.amount {
+      width: 60px;
+      border-radius: 0 !important;
     }
   }
 }
