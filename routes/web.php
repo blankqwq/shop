@@ -38,8 +38,13 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
     Route::get('payment/{order}/alipay', 'PaymentController@payByAlipay')->name('payment.alipay');
     Route::get('payment/{order}/wechart', 'PaymentController@payByWechart')->name('payment.wechart');
 
+    //支付回调地址
+    Route::get('payment/alipay/return', 'PaymentController@alipayReturn')->name('payment.alipay.return');
+
+
 });
 
+Route::post('payment/alipay/notify', 'PaymentController@alipayNotify')->name('payment.alipay.notify');
 
 Route::get('/goods', 'GoodsController@index')->name('goods.index');
 Route::get('/goods/{id}', 'GoodsController@show')->name('goods.show');
