@@ -13,7 +13,7 @@ class GoodsController extends Controller
     //
     public function index(Request $request)
     {
-        $builder = Goods::with('picture', 'sku', 'category')->where('state', 1);
+        $builder = Goods::with('picture','pictures', 'sku', 'category')->where('state', 1);
         if ($search = $request->input('search' . '')) {
             $like = '%' . $search . '%';
             $builder->where(function ($query) use ($like) {
@@ -46,7 +46,6 @@ class GoodsController extends Controller
         if (Auth::user()->favoriteGoods()->find($goods->id))
             $favored=true;
         $valuess = $goods->getValues();
-
         return view('goods.show', compact('goods','valuess','favored'));
     }
 

@@ -14,6 +14,11 @@ Route::group([
     $router->resource('/users', 'UsersController');
     $router->post('/goods', 'GoodsController@create');
     $router->resource('/goods', 'GoodsController');
+    $router->get('/orders', 'OrdersController@index')->name('admin.orders.index');
+    $router->get('/orders/{order}', 'OrdersController@show')->name('admin.orders.show');
+
+    $router->post('/orders/{order}/ship', 'OrdersController@ship')->name('admin.orders.ship');
+
 
     $router->resource('/goods_attribute', 'GoodsAttributesController');
     $router->resource('/goods_category', 'GoodsCategoryController');

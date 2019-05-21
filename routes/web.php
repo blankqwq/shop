@@ -34,7 +34,9 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
     Route::get('orders', 'OrderController@index')->name('orders.index');
     Route::post('orders', 'OrderController@store')->name('orders.store');
     Route::get('orders/{order}', 'OrderController@show')->name('orders.show');
-
+    Route::post('orders/{order}/received','OrderController@received')->name('orders.received');
+    Route::post('orders/{order}/review', 'OrderController@storeReview')->name('orders.review.store');
+    Route::get('orders/{order}/review', 'OrderController@showReview')->name('orders.review.show');
     Route::get('payment/{order}/alipay', 'PaymentController@payByAlipay')->name('payment.alipay');
     Route::get('payment/{order}/wechart', 'PaymentController@payByWechart')->name('payment.wechart');
 
@@ -42,8 +44,9 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
     Route::get('payment/alipay/return', 'PaymentController@alipayReturn')->name('payment.alipay.return');
 
 
-});
 
+});
+//支付宝将数据回调到这个接口
 Route::post('payment/alipay/notify', 'PaymentController@alipayNotify')->name('payment.alipay.notify');
 
 Route::get('/goods', 'GoodsController@index')->name('goods.index');

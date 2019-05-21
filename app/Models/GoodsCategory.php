@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use \Illuminate\Support\Facades\Cache;
 use Encore\Admin\Traits\AdminBuilder;
 use Encore\Admin\Traits\ModelTree;
 use Illuminate\Database\Eloquent\Model;
@@ -64,4 +65,10 @@ class GoodsCategory extends Model
             ->push($this->name)->implode('-');
     }
 
+
+    public function getTowLevel(){
+       return Cache::remember('goods_category',12000,function (){
+            return  GoodsCategory::with('children')->where('level',0)->get()->toArray();
+       });
+    }
 }

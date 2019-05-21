@@ -1,0 +1,8 @@
+.btn.active,.btn:hover {
+    margin-top: 0px !important;
+    background: #fff !important;
+    border: 2px solid red !important;
+}
+.btn.focus {
+    outline: 0 !important;
+}

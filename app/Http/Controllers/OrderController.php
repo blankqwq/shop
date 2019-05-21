@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exceptions\InternalException;
 use App\Http\Requests\OrderRequest;
+use App\Http\Requests\SendReviewRequest;
 use App\Jobs\CloseOrder;
 use App\Models\GoodsSkus;
 use App\Models\Order;
@@ -35,5 +36,28 @@ class OrderController extends Controller
     public function show(Order $order){
         $this->authorize('own',$order);
         return view('orders.show',['order'=>$order->load(['items.sku','items.goods'])]);
+    }
+
+    public function received(Order $order){
+        $this->authorize('own',$order);
+        if ($order->ship_status !== Order::SHIP_STATUS_DELIVERED){
+            throw new InternalException('订单还未发货');
+        }
+        $order->update(['ship_status'=>Order::SHIP_STATUS_RECEIVED]);
+        return $order;
+    }
+
+
+    public function showReview(Order $order){
+        $this->authorize('own',$order);
+        if (!$order->paid_at)
+            throw new InternalException('订单未支付');
+        return view('orders.review',['order'=>$order->load(['items.goods','items.sku'])]);
+    }
+
+    public function storeReview(Order $order,SendReviewRequest $request){
+        $this->authorize('own',$order);
+        if ($order->paid_at)
+            throw new InternalException('订单未支付');
     }
 }
