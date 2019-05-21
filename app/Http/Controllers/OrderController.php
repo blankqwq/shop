@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\OrderReviewed;
 use App\Exceptions\InternalException;
 use App\Http\Requests\OrderRequest;
 use App\Http\Requests\SendReviewRequest;
@@ -35,6 +36,7 @@ class OrderController extends Controller
 
     public function show(Order $order){
         $this->authorize('own',$order);
+
         return view('orders.show',['order'=>$order->load(['items.sku','items.goods'])]);
     }
 
@@ -51,13 +53,30 @@ class OrderController extends Controller
     public function showReview(Order $order){
         $this->authorize('own',$order);
         if (!$order->paid_at)
-            throw new InternalException('订单未支付');
+            throw new InternalException('订单未支付','订单未支付,不可以评价');
         return view('orders.review',['order'=>$order->load(['items.goods','items.sku'])]);
     }
 
     public function storeReview(Order $order,SendReviewRequest $request){
         $this->authorize('own',$order);
-        if ($order->paid_at)
-            throw new InternalException('订单未支付');
+        if (!$order->paid_at)
+            throw new InternalException('未支付','订单未支付');
+        if ($order->reviewed)
+            throw new InternalException('已评价','订单已评价');
+        $reviews = $request->input('reviews');
+        DB::transaction(function () use($reviews,$order){
+            foreach ($reviews as $review){
+                $orderItem = $order->items()->find($review['id']);
+                $orderItem->update([
+                    'rating'      => $review['rating'],
+                    'review'      => $review['review'],
+                    'review_at' => Carbon::now(),
+                ]);
+            }
+            $order->update(['reviewed' => true]);
+        });
+//        event(new OrderReviewed($order));
+        return redirect()->back();
+
     }
 }

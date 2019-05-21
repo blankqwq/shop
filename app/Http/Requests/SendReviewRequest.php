@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 
+
 use Illuminate\Validation\Rule;
 
 class SendReviewRequest extends Request
@@ -20,7 +21,7 @@ class SendReviewRequest extends Request
             'reviews'=>['array','required'],
             'reviews.*.id'=>[
                 'required',
-                Rule::exist('order_items','id')->where('order_id',$this->route('order')->id)
+                Rule::exists('order_items','id')->where('order_id',$this->route('order')->id)
             ],
             'reviews.*.rating'=>['required','integer','min:1'],
             'reviews.*.review'=>['required']

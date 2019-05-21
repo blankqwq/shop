@@ -15,7 +15,7 @@
     <meta name="keywords" content="Default Description">
     <meta name="description" content="Default keyword">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ config('app.name', 'Shop') }}</title>
+    <title>{{ config('app.name', 'Shop') }} - @yield('title')</title>
     <link href="https://fonts.googleapis.com/css?family=Archivo+Narrow:300,400,700%7CMontserrat:300,400,500,600,700,800,900" rel="stylesheet">
     <link rel="stylesheet" href="{{asset('plugins/font-awesome/css/font-awesome.min.css')}}">
     <link rel="stylesheet" href="{{asset('plugins/ps-icon/style.css')}}">

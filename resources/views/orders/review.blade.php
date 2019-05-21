@@ -51,8 +51,6 @@
 
                                                         </select>
                                                     </div>
-                                                    <span class="rating-star-yes">{{ str_repeat('★', $item->rating) }}</span>
-                                                    <span class="rating-star-no">{{ str_repeat('★', 5 - $item->rating) }}</span>
                                                 @else
                                                     <div class="ps-product__rating">
                                                         <select class="ps-rating"  name="reviews[{{$index}}][rating]">

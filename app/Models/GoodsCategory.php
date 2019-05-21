@@ -71,4 +71,8 @@ class GoodsCategory extends Model
             return  GoodsCategory::with('children')->where('level',0)->get()->toArray();
        });
     }
+
+    public function goods(){
+        return $this->hasMany(Goods::class,'category_id','id');
+    }
 }

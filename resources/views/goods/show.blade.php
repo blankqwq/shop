@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', $goods->title)
+@section('title', $goods->name)
     @section('css')
         <style>
             .btn.active, .btn:hover {
@@ -126,27 +126,24 @@
                             {!! $goods->desc !!}
                         </div>
                         <div class="tab-pane" role="tabpanel" id="tab_02">
-                            <p class="mb-20">1 review for <strong>Shoes Air Jordan</strong></p>
-                            <div class="ps-review">
-                                <div class="ps-review__thumbnail"><img src="images/user/1.jpg" alt=""></div>
+
+                            <p class="mb-20">{{count($reviews)}}个评价<strong>{{ $goods->name }}</strong></p>
+                            @foreach($reviews as $review)
+                                <div class="ps-review">
+                                <div class="ps-review__thumbnail"><img src="{{ $review->order->user->avatar }}" alt=""></div>
                                 <div class="ps-review__content">
                                     <header>
                                         <select class="ps-rating">
-                                            <option value="1">1</option>
-                                            <option value="1">2</option>
-                                            <option value="1">3</option>
-                                            <option value="1">4</option>
-                                            <option value="5">5</option>
+                                            @for($i=1;$i<=5;$i++)
+                                                <option value="1" @if($i === $review->rating) selected @endif>1</option>
+                                            @endfor
                                         </select>
-                                        <p>By<a href=""> Alena Studio</a> - November 25, 2017</p>
+                                        <p>By<a href="">{{ $review->order->user->name }}</a> - {{ $review->review_at }}</p>
                                     </header>
-                                    <p>Soufflé danish gummi bears tart. Pie wafer icing. Gummies jelly beans powder.
-                                        Chocolate bar pudding macaroon candy canes chocolate apple pie chocolate cake.
-                                        Sweet caramels sesame snaps halvah bear claw wafer. Sweet roll soufflé muffin
-                                        topping muffin brownie. Tart bear claw cake tiramisu chocolate bar gummies
-                                        dragée lemon drops brownie.</p>
+                                    <p>{{ $review->review }}</p>
                                 </div>
                             </div>
+                            @endforeach
 
                         </div>
                         <div class="tab-pane" role="tabpanel" id="tab_03">

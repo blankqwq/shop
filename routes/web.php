@@ -49,6 +49,8 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
 //支付宝将数据回调到这个接口
 Route::post('payment/alipay/notify', 'PaymentController@alipayNotify')->name('payment.alipay.notify');
 
+Route::get('/category/{id}', 'CategoryController@show')->name('goods.category.show');
+
 Route::get('/goods', 'GoodsController@index')->name('goods.index');
 Route::get('/goods/{id}', 'GoodsController@show')->name('goods.show');
 

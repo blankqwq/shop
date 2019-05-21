@@ -45,7 +45,7 @@
                                     <div class="mega-column">
                                         <ul class="mega-item mega-features">
                                             @foreach($category['children'] as $item)
-                                            <li><a href="product-listing.html">{{$item['name']}}</a></li>
+                                            <li><a href="{{ route('goods.category.show',$item['id']) }}">{{$item['name']}}</a></li>
                                             @endforeach
                                         </ul>
                                     </div>

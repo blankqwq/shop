@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Exceptions\InvalidRequestException;
 use App\Models\Goods;
 use App\Models\GoodsAttribute;
+use App\Models\Order;
+use App\Models\OrderItem;
 use \Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
@@ -46,7 +48,8 @@ class GoodsController extends Controller
         if (Auth::user()->favoriteGoods()->find($goods->id))
             $favored=true;
         $valuess = $goods->getValues();
-        return view('goods.show', compact('goods','valuess','favored'));
+        $reviews = OrderItem::with('order.user','sku')->where('goods_id',$id)->whereNotNull('review')->orderBy('review','desc')->get();
+        return view('goods.show', compact('goods','valuess','favored','reviews'));
     }
 
     public function favor(Goods $goods,Request $request){
